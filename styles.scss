@@ -1,0 +1,153 @@
+/* ─── Your portfolio's stylesheet (optional) ────────────────────────────────
+ *
+ * `_brand.yml` gives you colour/typography control with zero CSS knowledge —
+ * start there. This file is for the *structural* stuff `_brand.yml` can't
+ * express: spacing, layout, custom components, tiny QoL tweaks.
+ *
+ * How it's wired: `_quarto.yml` has `format.html.css: styles.scss`. Quarto
+ * compiles the SCSS for you — edit this file, re-render, done. Everything is
+ * optional; the file ships commented-out so it's a no-op until you uncomment.
+ *
+ * To find what to target, right-click any element in your rendered book and
+ * *Inspect* (Developer Tools), or open the book's compiled CSS. The selectors
+ * below are the common ones for a Quarto `html` book.
+ */
+
+/* Example — nudge the sidebar width so long filenames don't wrap
+ *
+ * .sidebar {
+ *   width: 300px;
+ * }
+ */
+
+/* Example — give code blocks a light tint so they read like a console
+ *
+ * div.sourceCode {
+ *   background-color: #faf7f0;
+ *   border-radius: 6px;
+ * }
+ */
+
+/* Example — make in-line code use the indigo accent
+ *
+ * code {
+ *   color: #4A5899;
+ * }
+ */
+
+/* Example — rounded cards / nicer figure frames
+ *
+ * .figure, figure img {
+ *   border-radius: 8px;
+ * }
+ */
+
+/* ─── Custom Branding Additions ───────────────────────────────────────────── */
+
+/* Modernize the main title presentation */
+h1.title {
+  font-weight: 700;
+  font-size: 2.3rem;
+  letter-spacing: -0.03em;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #E2E8F0; /* Soft professional gray line under the main title */
+  color: var(--brand-foreground);
+}
+
+/* Style section headings with the brand color */
+h2 {
+  color: var(--brand-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+}
+
+/* Give code blocks a clean, modern shadow, subtle border and round corners */
+div.sourceCode {
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Apply round corners to figures and images as well */
+.figure, figure img {
+  border-radius: 8px;
+}
+
+/* Make figure captions in the margin darker and easier to read */
+.quarto-layout-caption, 
+figcaption, 
+.figure-caption {
+  font-size: 0.85rem;
+  color: #444444 !important; /* Darker gray for metadata legibility */
+}
+
+/* ─── Layout & Typography Harmony ─────────────────────────────────────────── */
+
+/* Force the modern Inter font on absolutely every element (including sidebars) */
+body, .sidebar, nav, .toc-actions, #quarto-toc-toggle {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Give the central content column more breathing room */
+#quarto-content {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+
+/* Add a touch of space between text lines to reduce the compressed feel */
+p {
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+/* ─── Sidebar Panel & TOC Refinement ────────────────────────────────────────── */
+
+/* Create a more distinct gray background panel for the left sidebar menu */
+#quarto-sidebar {
+  background-color: #F1F5F9 !important; /* Slightly darker slate gray for a more pronounced look */
+  border-right: 1px solid #E2E8F0 !important;
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+}
+
+/* Style the main title of the left sidebar with your brand color and a bottom border */
+.sidebar-title {
+  color: var(--brand-primary) !important;
+  font-weight: 700 !important;
+  padding-bottom: 0.5rem !important;
+  border-bottom: 2px solid var(--brand-primary) !important; /* Elegant color bar under left title */
+  margin-bottom: 1.5rem !important;
+}
+
+/* Make navigation links in both sidebars more spaced, readable and responsive */
+.sidebar .sidebar-item a, 
+.margin-sidebar nav[role="doc-toc"] a {
+  padding: 0.35rem 0 !important;
+  transition: color 0.2s ease;
+  font-size: 0.92rem !important;
+}
+
+/* Subtle effect when hovering over the menu items */
+.sidebar .sidebar-item a:hover, 
+.margin-sidebar nav[role="doc-toc"] a:hover {
+  color: var(--brand-primary) !important;
+  text-decoration: none !important;
+}
+
+/* Clean up the right-side chapter menu layout and fix indentation */
+.margin-sidebar {
+  padding-left: 1.5rem !important;
+}
+
+/* Add clear indentation/spacing in front of the subcategory items on the right menu */
+.margin-sidebar nav[role="doc-toc"] ul ul {
+  padding-left: 1rem !important; /* Adds clear spacing before sub-items like "How to use..." */
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.margin-sidebar nav[role="doc-toc"] title {
+  font-weight: 600 !important;
+  color: var(--brand-foreground) !important;
+}

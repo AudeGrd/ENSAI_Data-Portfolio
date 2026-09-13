@@ -1,0 +1,51 @@
+# ─── Your portfolio's brand ────────────────────────────────────────────────
+# This file is a Quarto `_brand.yml`: edit the colours/fonts below and the
+# whole book restyles on the next render. It is a *placeholder* — a sensible
+# starting seed (the ENSAI course palette). Make it yours: pick colours you
+# like, swap the fonts, and the book will feel like *your* portfolio, not the
+# course materials.
+#
+#   Quarto auto-discovers `_brand.yml` sitting next to `_quarto.yml`, so no
+#   wiring is needed to use it. For deeper control (spacing, layout, custom
+#   components) see `styles.scss` — the two work together; `_brand.yml` drives
+#   the palette/typography, `styles.scss` anything CSS-like on top.
+#
+# Colours: palette holds named colours; the semantic slots (primary,
+# foreground, background, …) pick which ones mean what. Any `"#hex"` is fair
+# game. Rule of thumb — keep ~3 accents + one ink + one paper.
+
+color:
+  palette:
+    cobalt:  "#1A5F7A"   # primary accent (assignments / structure)
+    blue:    "#57C5B6"   # secondary accent (highlights / results)
+    indigo:  "#4A5899"   # tertiary accent (links / emphasis)
+    ink:     "#222222"   # Soft near-black for body text
+    paper:   "#FAFAFA"   # paper for the page
+    white:   "#FFFFFF"
+  primary: cobalt
+  secondary: blue
+  tertiary: indigo
+  foreground: ink
+  background: paper
+
+# Typography: swap the fonts for ones you like (Google Fonts via `source:
+# google`, or drop `source:` for the browser defaults). `monospace` styles the
+# code blocks your EDA chapter is full of.
+typography:
+  fonts:
+    - family: Inter
+      source: google
+    - family: "JetBrains Mono"
+      source: google
+  base:
+    family: Inter
+  headings:
+    family: Inter
+    weight: 700
+  monospace:
+    family: "JetBrains Mono"
+
+# Meta: identity that shows in the browser tab / share cards. Feel free to
+# trim or extend.
+meta:
+  name: "Aude Guerand — Data Science Portfolio"

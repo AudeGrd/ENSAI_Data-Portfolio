@@ -1,0 +1,54 @@
+---
+# The book's home page. Edit the title/subtitle/description to introduce
+# yourself and what this portfolio contains.
+title: "Welcome to my Data Science Workspace"
+author: "Aude GUERAND"
+date: today
+---
+
+```{r}
+#| include: false
+# Package setup lives in one shared chunk so every chapter starts from a
+# consistent environment. Add libraries you use across the book here.
+library(tidyverse)
+```
+
+## About Me & This Portfolio 👋
+
+Welcome to my personal data science portfolio! I am **Aude GUERAND**, currently a student in the **Master for Smart Data Science (MSD)** at **ENSAI** (Ecole Nationale de la Statistique et de l'Analyse de l'Information). 
+
+This space is built as part of the *Reproducible Workflows* course. Over the academic year, it will grow into a comprehensive collection of my data science projects, highlighting rigorous engineering standards and fully reproducible analytical pipelines.
+
+Every project hosted here follows modern industry best practices:
+- **Reproducible Sourcing**: Automated data pipelines pulling from open-data portals (e.g., data.gouv.fr) directly via code.
+- **Environment Isolation**: Strict dependency management pinned using cutting-edge tools like `uv`/`uvr` and `{renv}`.
+- **Version Control**: Full project transparency and history trackability hosted on GitHub.
+
+---
+
+## Portfolio Chapters & Projects
+
+This workspace is structured to track my academic progression and engineering outputs:
+
+- **Chapter 1 — Exploratory Data Analysis (EDA)**: My upcoming primary project focused on autonomous data fetching, cleaning, advanced visualization, and insight generation from a public dataset.
+- **Chapters 2 & 3 — Core Milestones**: Dynamic placeholders designed to incorporate advanced modeling and data pipelines as the Master's program progresses.
+
+```{r}
+#| label: fig-eda-sneak-peek
+#| fig-cap: "Initial data glimpse (Temporary placeholder visualization ahead of the EDA project)."
+# A tiny placeholder plot so the book renders before you add your own analysis.
+ggplot(data.frame(x = rnorm(200), y = rnorm(200)), aes(x, y)) +
+  geom_point(alpha = 0.5, colour = "#1A5F7A") + # Synchronized with your custom cobalt blue brand color
+  labs(x = "Variable X", y = "Variable Y")
+```
+
+---
+
+## Language-Agnostic Infrastructure
+
+Following the core philosophy of a modern data stack, this pipeline is **language-agnostic by design**. While the initial engineering relies on R and the Tidyverse, the underlying deployment architecture—orchestrated with Quarto, versioned through Git, and published to Posit Connect—seamlessly scales across R, Python, or hybrid environments.
+
+::: {.callout-note}
+## Smart Data Engineering
+As a Smart Data Science student, my focus bridges advanced statistical modeling with software engineering practices to deploy stable, reproducible, and production-ready data systems.
+:::
