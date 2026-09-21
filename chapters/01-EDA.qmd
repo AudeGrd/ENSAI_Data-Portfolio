@@ -1,6 +1,7 @@
 ---
-title: "Chapter 1 · My EDA project"
-author: "Your Name"
+title: "Chapter 1 · EDA · Live coral cover across New Caledonia's reef sites"
+subtitle: "As part of the Reproducible Workflows course"
+author: "Aude GUERAND"
 date: today
 ---
 
@@ -22,41 +23,61 @@ date: today
 ## The question
 
 <!-- TODO: In a sentence or two, what question are you trying to answer with this dataset?  -->
+What does live hard coral cover look like across the reef sites monitored by
+the **RORC** (Réseau d'Observation des Récifs Coralliens), New Caledonia's
+volunteer coral reef monitoring network, and how do the sites compare to one
+another?
 
 ## Getting the data
 
-The data is sourced **by code** from an open-data portal of your choice. Because
-the download lives inside the document, it is recorded in the analysis itself;
-anyone who re-renders this document gets the same data and the same results.
-Record the dataset's **publisher and URL** in the text so the provenance is
-explicit.
 
-The only portal-specific part is the *fetch*. This template shows two ways;
-use the one that fits your portal:
+The data is sourced **by code** from New Caledonia's open-data portal,
+[data.gouv.nc](https://data.gouv.nc), published by the RORC network (Agence
+calédonienne de la biodiversité and provincial partners). Two related
+datasets are used: reef **habitat/substrate** observations and
+**invertebrate** counts, both collected on the same stations and transects.
 
-- **`{rdatagouv}`** (data.gouv.fr only, optional): search/download from R.
-- **Any portal by URL**: `download.file()` works with any portal's direct
-  download link.
+- Habitats: <https://data.gouv.nc/api/v2/catalog/datasets/rorc_habitats_recifaux/exports/csv>
+- Invertebrates: <https://data.gouv.nc/api/v2/catalog/datasets/rorc_invertebres/exports/csv>
+
+Both are fetched directly from their stable CSV export endpoints (the
+portal's own API), so re-rendering this document always pulls the same data
+by construction — no manual download step is involved.
+
+**A note on how the monitoring works.** Each dataset is organised around
+four nested levels: a **`site`** (a broad reef location, e.g. "Koumac") is
+visited during a **`campagne`** (a monitoring campaign/survey round); within
+a site, divers survey one or more **`station`**s (a fixed monitoring spot,
+returned to on every campaign so results are comparable over time); and at
+each station, observations are recorded along one or more **`transect`**s —
+a fixed-length line (commonly 20 or 50 m) laid along the reef, under which
+the diver records what lies directly beneath it at regular intervals (coral,
+sand, algae, etc.) or counts organisms within a fixed band alongside it.
+The transect is the actual unit of observation: it is what turns "what does
+this reef look like" into a repeatable, comparable measurement.
 
 ```{r}
 #| label: setup
 #| message: false
-# Load what you use. {rdatagouv} only if you're on data.gouv.fr and want it.
-# library(rdatagouv)    # search / download datasets from data.gouv.fr
-library(janitor)        # clean column names, tabulate with tabyl()
-library(naniar)         # visualise missing values
-library(skimr)          # one-line data summary with skim()
+library(readr)      # read_csv2() for the semicolon-separated exports
+library(janitor)    # clean_names(), tabulate with tabyl()
+library(dplyr)      # data wrangling
+library(naniar)     # visualise missing values
+library(skimr)      # one-line data summary with skim()
+library(gt)         # summary table
+library(ggplot2)    # the main figure
 ```
-
 ```{r}
 #| label: download
 #| message: false
-# TODO: replace with the code you wrote in the Session-2 lab.
-# Option A — data.gouv.fr via {rdatagouv}:
-# ds <- get_dataset("my-dataset-slug"); url <- ds$resources$url[1]
-# Option B — any portal by direct URL:
-# url <- "https://www.example-portal.org/.../my-data.csv"
-# download.file(url, "data/my-data.csv")
+url_habitats    <- "https://data.gouv.nc/api/v2/catalog/datasets/rorc_habitats_recifaux/exports/csv"
+url_invertebres <- "https://data.gouv.nc/api/v2/catalog/datasets/rorc_invertebres/exports/csv"
+
+habitats_raw    <- read_csv2(url_habitats)
+invertebres_raw <- read_csv2(url_invertebres)
+
+habitats    <- habitats_raw    |> clean_names()
+invertebres <- invertebres_raw |> clean_names()
 ```
 
 > **Optionally pin the fetched copy** with `{pins}` so the chapter reads from a
@@ -64,8 +85,8 @@ library(skimr)          # one-line data summary with skim()
 >
 > ```r
 > board <- pins::board_folder("pins/", versioned = TRUE)
-> pins::pin_write(board, dat, "my-data", type = "csv")
-> dat    <- pins::pin_read(board, "my-data")
+> pins::pin_write(board, habitats, "rorc_habitats", type = "csv")
+> habitats <- pins::pin_read(board, "rorc_habitats")
 > ```
 
 
@@ -73,9 +94,8 @@ library(skimr)          # one-line data summary with skim()
 
 ```{r}
 #| label: skim
-#| fig-cap: "A one-line summary of the dataset."
-# The skim() output gives you type, missingness and distributions at a glance.
-# skim(dat)
+#| fig-cap: "A one-line summary of the habitats dataset."
+skim(habitats)
 ```
 
 ```{r}
@@ -90,6 +110,56 @@ library(skimr)          # one-line data summary with skim()
 rename, recode, or drop, and why? A defensible cleaning decision is a feature
 of a good analysis, not an afterthought. -->
 
+
+
+Column names were standardised with `janitor::clean_names()` on import.
+
+The `type_substrat` column uses a Reef Check / GCRMN-style benthic
+nomenclature rather than plain-language labels (confirmed by inspecting
+`distinct(habitats, type_substrat)`):
+
+| Code  | Meaning                    | Kept for "live coral"? |
+|-------|-----------------------------|:-----------------------:|
+| `HCB` | Hard Coral Branching         | ✅ |
+| `HCM` | Hard Coral Massive            | ✅ |
+| `HCO` | Hard Coral Other                | ✅ |
+| `HCT` | Hard Coral Tabulate               | ✅ |
+| `SC`  | Soft Coral                         | ❌ |
+| `DC`  | Dead Coral                          | ❌ |
+| `FS`  | Fleshy Seaweed (algae)                | — |
+| `SP`  | Sponge                                  | — |
+| `RC`  | Rock                                      | — |
+| `RB`  | Rubble                                     | — |
+| `SD`  | Sand                                        | — |
+| `SI`  | Silt                                         | — |
+| `OT`  | Other                                        | — |
+
+Only the four hard-coral codes (`HCB`, `HCM`, `HCO`, `HCT`) were kept to
+isolate **live hard coral**. Two related categories were deliberately
+**excluded**: `DC` (Dead Coral, since it is not "live" by definition) and
+`SC` (Soft Coral, since soft coral is not part of the reef-building hard
+coral community this question focuses on). This is a judgment call — a
+version of this analysis including soft coral would answer a slightly
+different question, and is a natural extension noted in Findings.
+
+
+```{r}
+#| label: clean-filter
+coral_labels <- c("HCB", "HCM", "HCO", "HCT")
+
+coral_habitats <- habitats |>
+  filter(type_substrat %in% coral_labels)
+
+coral_cover_by_site <- coral_habitats |>
+  group_by(site) |>
+  summarise(
+    total_coral_count = sum(decompte, na.rm = TRUE),
+    n_observations = n(),
+    .groups = "drop"
+  ) |>
+  arrange(desc(total_coral_count))
+```
+
 ## Plotting the story
 
 <!-- TODO: replace with your figures. Give every figure a caption and refer to
@@ -97,16 +167,68 @@ it in the text (e.g. "Fig. 1 shows that …"). If a figure uses randomness
 (sampling, jitter, a simulation), fix the seed *inside* that cell with
 `withr::with_seed(2025, { ... })` so the figure is identical on every render. -->
 
+
+```{r}
+#| label: tbl-coral-cover
+#| tbl-cap: "Live hard coral cover by site."
+coral_cover_by_site |>
+  gt() |>
+  tab_header(
+    title = "Live coral cover by site",
+    subtitle = "RORC New Caledonia — Réseau d'Observation des Récifs Coralliens"
+  ) |>
+  cols_label(
+    site = "Site",
+    total_coral_count = "Total coral count",
+    n_observations = "Number of observations"
+  )
+```
+
 ```{r}
 #| label: fig-main
-#| fig-cap: "The central figure of your analysis."
+#| fig-cap: "Total live hard coral count by site, RORC New Caledonia."
+coral_cover_by_site |>
+  ggplot(aes(x = reorder(site, total_coral_count), y = total_coral_count)) +
+  geom_col(fill = "#2C7A7B") +
+  coord_flip() +
+  labs(
+    x = "Site",
+    y = "Total live hard coral count",
+    title = "Live hard coral cover by site"
+  ) +
+  theme_minimal()
 ```
+
+Fig. 1 shows Koumac with the highest total coral count, followed by
+Poindimie, Deva, La Foa, Ouegoa and Port Bouquet, in decreasing order.
+
 
 ## Findings
 
 <!-- TODO: what did you learn? This is your discussion: put your findings and
 the original question back into perspective. Keep it honest: say what you
 found, and what you did NOT find. -->
+
+
+Koumac has both the highest total coral count (1916) and the most
+observations recorded (544), while Port Bouquet has the fewest of both (687
+and 192 respectively). This raises a methodological caveat: the raw totals
+in @tbl-coral-cover partly reflect **sampling effort**, not just reef
+condition. A fairer, effort-adjusted comparison would look at
+`total_coral_count / n_observations` per site rather than the raw sum — a
+natural next step for this chapter.
+
+What this analysis does **not** establish: it is a single-snapshot summary
+across the years present in the export, so no trend over time is shown here,
+and no explanation is offered for *why* some sites carry more live coral
+than others (exposure, depth, distance to river mouths, past bleaching
+events, etc. are all plausible but untested here). Extending the analysis to
+use the `campagne` field to look at coral cover over time, or joining with
+the `invertebres` table (on `campagne` + `site` + `station` + `transect`) to
+see whether coral-rich sites also host greater invertebrate diversity, are
+both natural directions for a later revision of this chapter.
+
+
 
 ---
 
