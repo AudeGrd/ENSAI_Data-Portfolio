@@ -17,7 +17,7 @@ library(tidyverse)
 
 Welcome to my personal data science portfolio! I am **Aude GUERAND**, currently a student in the **Master for Smart Data Science (MSD)** at **ENSAI** (Ecole Nationale de la Statistique et de l'Analyse de l'Information). 
 
-This space is built as part of the *Reproducible Workflows* course. Over the academic year, it will grow into a comprehensive collection of my data science projects, highlighting rigorous engineering standards and fully reproducible analytical pipelines.
+This space was first built as part of the *Reproducible Workflows* course. Over the academic year, it will grow into a comprehensive collection of my data science projects, highlighting rigorous engineering standards and fully reproducible analytical pipelines.
 
 Every project hosted here follows modern industry best practices:
 - **Reproducible Sourcing**: Automated data pipelines pulling from open-data portals (e.g., data.gouv.fr) directly via code.
